@@ -33,12 +33,33 @@
             echo "<p class= 'calc-eror'> Fill all fields</p>";
             $errors = true;
         }
+        if(!is_numeric($num01)|| !is_numeric($num02)){
+            echo "<p class= 'calc-eror'> Only write numbers!!</p>";
+            $errors = true;
+        }
+        // Calculate the numbers if no erors 
+        if (!$errors){
+            $value = 0;
+            switch($operator){
+                case "add":
+                    $value = $num01 + $num02;
+                    break;
+                case "substract":
+                    $value = $num01 - $num02;
+                    break;
+                case "multiply":
+                    $value = $num01 * $num02;
+                    break;
+                case "divide":
+                    $value = $num01 / $num02;
+                    break;
+                default:
+                    echo "<p class= 'calc-eror'> Something went wrong</p>"; 
+            }
+            echo "<p class= 'calc-result'> Result = {$value} </p>";
+        }
     }
-    
-    
-    
     ?>
-
 </body>
 </html>
 
