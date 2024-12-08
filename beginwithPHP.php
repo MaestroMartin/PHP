@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="get">
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
         <input type="number" name="num01" placeholder="Number one" required>
         <select name="operator">
             <option value="add">+</option>
@@ -20,27 +20,32 @@
     </form>
     
     <?php 
-    if ($_SERVER['REQUEST_METHOD'] == "POST"){
-        // grab data from imputs
-        $num01 = filter_input(INPUT_POST, "num01", FILTER_SANITIZE_NUMBER_FLOAT);
-        $num02 = filter_input(INPUT_POST, "num02", FILTER_SANITIZE_NUMBER_FLOAT);
-        $operator = htmlspecialchars($_POST["operator"]);
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        // Grab data from inputs
+        $num01 = filter_input(INPUT_POST, "num01", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $num02 = filter_input(INPUT_POST, "num02", FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $operator = filter_input(INPUT_POST, "operator");
 
         // Error handlers
         $errors = false;
 
-        if (empty($num02)|| empty($num01)|| empty($operator)){
-            echo "<p class= 'calc-eror'> Fill all fields</p>";
+        if (empty($num02) || empty($num01) || empty($operator)) {
+            echo "<p class='calc-error'>Fill all fields</p>";
             $errors = true;
         }
-        if(!is_numeric($num01)|| !is_numeric($num02)){
-            echo "<p class= 'calc-eror'> Only write numbers!!</p>";
+        if (!is_numeric($num01) || !is_numeric($num02)) {
+            echo "<p class='calc-error'>Only write numbers!!</p>";
             $errors = true;
         }
-        // Calculate the numbers if no erors 
-        if (!$errors){
+        if ($operator === "divide" && $num02 == 0) {
+            echo "<p class='calc-error'>Division by zero is not allowed</p>";
+            $errors = true;
+        }
+
+        // Calculate the numbers if no errors 
+        if (!$errors) {
             $value = 0;
-            switch($operator){
+            switch ($operator) {
                 case "add":
                     $value = $num01 + $num02;
                     break;
@@ -54,23 +59,11 @@
                     $value = $num01 / $num02;
                     break;
                 default:
-                    echo "<p class= 'calc-eror'> Something went wrong</p>"; 
+                    echo "<p class='calc-error'>Something went wrong</p>"; 
             }
-            echo "<p class= 'calc-result'> Result = {$value} </p>";
+            echo "<p class='calc-result'>Result = {$value}</p>";
         }
     }
     ?>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
